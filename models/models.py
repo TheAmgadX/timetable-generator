@@ -1,8 +1,7 @@
 class Course:
-    def __init__(self, code: str, name: str, credit: int, type: str):
+    def __init__(self, code: str, name: str, type: str):
         self.code = code
         self.name = name
-        self.credit = credit
         self.type = type
 
     def build_structure(self):
