@@ -38,7 +38,8 @@ def load_data():
                     course_id = row[0].strip()
                     name = row[1].strip()
                     type_ = row[2].strip()
-                    course = Course(course_id, name, type_)
+                    time_slots = row[3]
+                    course = Course(course_id, name, type_, time_slots)
                     courses.append(course)
                     total_courses += 1
 

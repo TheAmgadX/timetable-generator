@@ -1,8 +1,9 @@
 class Course:
-    def __init__(self, code: str, name: str, type: str):
+    def __init__(self, code: str, name: str, type: str, time_slots: int):
         self.code = code
         self.name = name
         self.type = type
+        self.time_slots = time_slots
 
     def build_structure(self):
         pass

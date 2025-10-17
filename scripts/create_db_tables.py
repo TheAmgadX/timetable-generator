@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("db/timetable.db")
+conn = sqlite3.connect("../timetable.db")
 cur = conn.cursor()
 
 cur.executescript("""
@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS Levels (
 CREATE TABLE IF NOT EXISTS Courses (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
-    type TEXT CHECK(type IN ('Lecture', 'Lab', 'Tutorial', 'Graduation'))
+    type TEXT CHECK(type IN ('Lecture', 'Lab', 'Tutorial', 'Graduation')),
+    time_slots INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS CourseLevels (
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Instructors (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     role TEXT,
-    notPreferredSlots TEXT,
+    notPreferredDay TEXT
 );
 
 CREATE TABLE IF NOT EXISTS InstructorCourses (
