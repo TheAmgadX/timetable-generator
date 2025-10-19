@@ -1,6 +1,10 @@
 import sqlite3
+import os
 
-conn = sqlite3.connect("../timetable.db")
+db_path = os.path.abspath("timetable.db")
+print("Creating database at:", db_path)
+
+conn = sqlite3.connect(db_path)
 cur = conn.cursor()
 
 cur.executescript("""
