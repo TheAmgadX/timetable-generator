@@ -6,7 +6,6 @@ class Instructor:
         self.instructor_id = instructor_id
         self.name = name
         self.role = role
-        self.not_preferred_slot = not_preferred_slot
         self.qualified_courses = qualified_courses
 
     # check if the instructor is qualified for the course.
@@ -17,9 +16,9 @@ class Instructor:
     def write_to_db(self, cur : sqlite3.Cursor):
         try:
             cur.execute("""
-                INSERT INTO Instructors (id, name, role, notPreferredDay)
+                INSERT INTO Instructors (id, name, role)
                         VALUES (?, ?, ?, ?);
-                """, (self.instructor_id, self.name, self.role, self.not_preferred_slot))
+                """, (self.instructor_id, self.name, self.role))
 
             for course_id in self.qualified_courses:
                 cur.execute("""
@@ -34,9 +33,9 @@ class Instructor:
         try:
             cur.execute("""
                 UPDATE Instructors
-                SET name = ?, role = ?, notPreferredDay = ?
+                SET name = ?, role = ?
                 WHERE id = ?;
-            """, (self.name, self.role, self.not_preferred_slot, self.instructor_id))
+            """, (self.name, self.role, self.instructor_id))
 
             if self.qualified_courses:
                 placeholders = ','.join('?' * len(self.qualified_courses))
@@ -82,7 +81,6 @@ class Instructor:
                 i.id AS instructor_id,
                 i.name AS instructor_name,
                 i.role AS instructor_role,
-                i.notPreferredDay AS not_preferred_day,
                 ic.course_id AS course_id
             FROM Instructors i
             INNER JOIN InstructorCourses ic ON i.id = ic.instructor_id
@@ -94,13 +92,12 @@ class Instructor:
 
             instructors = {}
             
-            for instructor_id, name, role, not_preferred_day, course_id in rows:
+            for instructor_id, name, role, course_id in rows:
                 if instructor_id not in instructors:
                     instructors[instructor_id] = Instructor(
                         instructor_id=instructor_id,
                         name=name,
                         role=role,
-                        not_preferred_slot=not_preferred_day,
                         qualified_courses=[]
                     )
                 instructors[instructor_id].qualified_courses.append(str(course_id))

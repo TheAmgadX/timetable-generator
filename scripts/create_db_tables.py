@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS Instructors (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     role TEXT,
-    notPreferredDay TEXT
 );
 
 CREATE TABLE IF NOT EXISTS InstructorCourses (

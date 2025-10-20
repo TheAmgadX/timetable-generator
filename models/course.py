@@ -1,7 +1,7 @@
 import sqlite3
 
 class Course:
-    def __init__(self, code: str, name: str, type: str, time_slots: int, course_levels: str):
+    def __init__(self, code: str, name: str, type: str, time_slots: int, course_levels : list[str]):
         self.code = code
         self.name = name
         self.type = type
