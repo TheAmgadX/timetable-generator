@@ -1,12 +1,13 @@
 import sqlite3
 
 class Instructor:
-    def __init__(self, instructor_id: int, name: str, role: str,
-                 not_preferred_slot: str, qualified_courses: list[str]):
+    def __init__(self, instructor_id: int, name: str, role: str, qualified_courses: set[str]):
         self.instructor_id = instructor_id
         self.name = name
         self.role = role
         self.qualified_courses = qualified_courses
+        self.assigned_courses = set()
+        
 
     # check if the instructor is qualified for the course.
     def is_qualified_for(self, course_code: str) -> bool:
@@ -98,12 +99,41 @@ class Instructor:
                         instructor_id=instructor_id,
                         name=name,
                         role=role,
-                        qualified_courses=[]
+                        qualified_courses=set()
                     )
-                instructors[instructor_id].qualified_courses.append(str(course_id))
+                instructors[instructor_id].qualified_courses.add(str(course_id))
 
             return list(instructors.values())
 
         except sqlite3.Error as e:
             print("Error (load_db):", e)
             return []
+
+    def __build_data_representation(self, instructor : "Instructor"):
+        pass
+
+    @classmethod
+    def build_data_representation(cls, instructors : list["Instructor"]):
+        pass
+
+    @classmethod
+    def map_instructors_to_courses(cls, instructors : list["Instructor"]):
+        """
+            - each course has instructors who can teach this course.
+            - each instructor has courses he can teach
+
+            - Data Representation: 
+                map[course-code] : CourseObj
+                map[instructor-code] : InstructorObj
+
+                CourseObj -> has set of instructors can teach it and has attr for the isntructor actually teach it.
+                InstructorObj -> has set of courses he can teach teaches, and a set of courses he actually teach.  
+
+
+            Algorithm: 
+                iterate over courses: 
+                    for each course see the available instructors
+                        see the least instructor has courses assigned to him
+                            assign the course for this instructor
+                
+        """

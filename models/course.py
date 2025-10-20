@@ -1,12 +1,16 @@
 import sqlite3
+from models.instructor import *
 
 class Course:
-    def __init__(self, code: str, name: str, type: str, time_slots: int, course_levels : list[str]):
+    def __init__(self, code: str, name: str, type: str, time_slots: int, course_levels : set[str], 
+                course_instructors : set["Instructor"]):
         self.code = code
         self.name = name
         self.type = type
         self.time_slots = time_slots
         self.course_levels = course_levels
+        self.course_instructors = course_instructors
+        self.course_assigned_instructors = set()
 
     def write_to_db(self, cur : sqlite3.Cursor):
         try:
@@ -59,10 +63,14 @@ class Course:
                 DELETE FROM Courses WHERE id = ?;
                 """, (self.code,))
 
-        # NOTE: the levels will be deleted due to the ON DELETE CASCADE in the schema. 
+        # NOTE: the CourseLevels and InstructorCourses will be deleted due to the ON DELETE CASCADE in the schema. 
         # but I added it for safety.
             cur.execute("""
                 DELETE FROM CourseLevels WHERE course_id = ?;
+                """, (self.code,))
+
+            cur.execute("""
+                DELETE FROM InstructorCourses WHERE course_id = ?;
                 """, (self.code,))
 
         except sqlite3.Error as e:
@@ -76,9 +84,11 @@ class Course:
                 c.title AS course_name,
                 c.type AS course_type,
                 c.time_slots AS course_slots,
-                cl.level_id AS level_id
+                cl.level_id AS level_id,
+                ic.instructor_id as instructor_id 
             FROM Courses c
             INNER JOIN CourseLevels cl ON c.id = cl.course_id
+            INNER JOIN InstructorCourses ic ON c.id = ic.course_id
             ORDER BY c.id;
         """
         try:
@@ -86,16 +96,18 @@ class Course:
             rows = cur.fetchall()
 
             courses = {}
-            for course_id, name, type_, slots, level_id in rows:
+            for course_id, name, type_, slots, level_id, instructor_id in rows:
                 if course_id not in courses:
                     courses[course_id] = Course(
                         code=course_id,
                         name=name,
                         type=type_,
                         time_slots=slots,
-                        course_levels=[]
+                        course_levels=set(),
+                        course_instructors=set()
                     )
-                courses[course_id].course_levels.append(str(level_id))
+                courses[course_id].course_levels.add(str(level_id))
+                courses[course_id].course_instructors.add(str(instructor_id))
 
             return list(courses.values())
 
