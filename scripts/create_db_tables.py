@@ -1,5 +1,5 @@
-import sqlite3
 import os
+import sqlite3
 
 db_path = os.path.abspath("timetable.db")
 print("Creating database at:", db_path)
@@ -7,18 +7,23 @@ print("Creating database at:", db_path)
 conn = sqlite3.connect(db_path)
 cur = conn.cursor()
 
+# Enable foreign key constraints
+cur.execute("PRAGMA foreign_keys = ON;")
+
+# Create tables
 cur.executescript("""
 CREATE TABLE IF NOT EXISTS Levels (
     id TEXT PRIMARY KEY,
     groups INTEGER,
     sections INTEGER,
-    max_members_per_section INTEGER
+    max_members_per_section INTEGER,
+    students_count INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS Courses (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
-    type TEXT CHECK(type IN ('Lecture', 'Lab', 'Tutorial', 'Graduation')),
+    type TEXT CHECK(type IN ('Lecture', 'Lab', 'Tutorial', 'Graduation', 'Japanese')),
     time_slots INTEGER
 );
 
@@ -33,7 +38,7 @@ CREATE TABLE IF NOT EXISTS CourseLevels (
 CREATE TABLE IF NOT EXISTS Instructors (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
-    role TEXT,
+    role TEXT
 );
 
 CREATE TABLE IF NOT EXISTS InstructorCourses (
@@ -46,7 +51,7 @@ CREATE TABLE IF NOT EXISTS InstructorCourses (
 
 CREATE TABLE IF NOT EXISTS Rooms (
     id TEXT PRIMARY KEY,
-    type TEXT CHECK(Type IN ('Lecture', 'Lab', 'Tutorial')),
+    type TEXT CHECK(type IN ('Lecture', 'Lab', 'Tutorial')),
     capacity INTEGER
 );
 """)

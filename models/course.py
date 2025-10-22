@@ -1,9 +1,8 @@
 import sqlite3
-from models.instructor import *
 
 class Course:
     def __init__(self, code: str, name: str, type: str, time_slots: int, course_levels : set[str], 
-                course_instructors : set["Instructor"]):
+                course_instructors : set[str]):
         self.code = code
         self.name = name
         self.type = type
@@ -114,4 +113,15 @@ class Course:
         except sqlite3.Error as e:
             print("Error loading courses:", e)
             return []
-        
+    
+    """
+        build the data representaion for the courses to be used in the algorithm.
+    """
+    @classmethod
+    def build_data_representation(cls, courses : list["Course"]):
+        courses_m = {}
+
+        for course in courses:
+            courses_m[course.name] = course
+
+        return courses_m

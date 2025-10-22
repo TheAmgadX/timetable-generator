@@ -1,2 +1,7 @@
 *.csv
 *.db
+pycache/
+*.pyc
+*.pyo
+*.pyd
+

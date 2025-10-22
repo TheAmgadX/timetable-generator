@@ -54,3 +54,23 @@ class Room:
         except sqlite3.Error as e:
             print("Error (load_db):", e)
             return []
+    
+    """
+        build the data representaion for the rooms to be used in the algorithm.
+    """
+    @classmethod
+    def build_data_representation(cls, rooms: list["Room"]):
+        """
+            Rooms Map:
+                    {
+                        Type:{
+                            Capacity: set_of_rooms with those properties
+                        }
+                    }
+        """
+        rooms_m = {}
+
+        for room in rooms:
+            rooms_m[room.type][room.capacity].add(room)
+
+        return rooms_m
