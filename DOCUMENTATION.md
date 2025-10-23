@@ -250,7 +250,7 @@ flowchart TD
     B -- Lecture --> D[need 1 instructor]
     B -- Japanese --> E[need 3 instructors]
     B -- other --> F[need 2 instructors]
-    D --> G[fill heap with instructors (negated timeslots)]
+    D --> G[fill heap with instructors \(negated timeslots\)]
     E --> G
     F --> G
     G --> H[selected instructors in heap]
@@ -308,30 +308,3 @@ python3 -m unittest discover -v
 ```
 
 Notes about tests: `test/model_tests.py` sets up an in-memory SQLite database so running tests is safe and does not modify `timetable.db`.
-
-## Suggestions, known issues & next steps
-
-- Fix `Room.build_data_representation` to initialize nested dicts/sets using `defaultdict(lambda: defaultdict(set))` or explicit checks.
-- Harden `map_instructors_to_courses` by:
-  - logging warnings when a course references unknown levels or has too few qualified instructors,
-  - optionally raising or returning diagnostics for post-processing.
-- Expand unit tests to cover:
-  - Courses with missing levels or instructors,
-  - The heap-selection behavior when instructors have different `time_slots_assigned` values,
-  - `Room.build_data_representation` behavior and expected outputs.
-- Add type hints and mypy/flake8 linting to improve maintainability.
-- Add a simple CLI to run the assignment algorithm and produce an output report (CSV/JSON) of assignments.
-
-## Completion summary
-
-- Added a full `DOCUMENTATION.md` describing architecture, DB design, classes, algorithms, diagrams, and run/test instructions.
-- Included Mermaid diagrams (class, ER, sequence, flow).
-
-If you'd like, I can also:
-
-- Render the Mermaid diagrams into PNG/SVG files and add them to the repo.
-- Add more detailed examples with sample data and expected output (CSV/JSON) from the assignment algorithm.
-
----
-
-Last updated: (auto-generated) — see commit history for details.
